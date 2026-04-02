@@ -1,4 +1,5 @@
 # Artemis II Matrix Portal Display 🚀
+![Artemis II Matrix Portal Display](IMG_6961.jpg)
 
 A CircuitPython project for the **Adafruit Matrix Portal M4** + **64×32 RGB LED matrix** that displays real-time Artemis II mission status.
 
