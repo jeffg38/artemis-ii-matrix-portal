@@ -3,6 +3,11 @@
 
 A CircuitPython project for the **Adafruit Matrix Portal M4** + **64×32 RGB LED matrix** that displays real-time Artemis II mission status.
 
+## Code Options
+
+- `code.py` → Standard display version  
+- `code_with_io.py` → Adds Adafruit IO telemetry logging
+
 The display automatically transitions through mission phases:
 
 * **Pre-launch countdown**
