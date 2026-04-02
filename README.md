@@ -224,3 +224,23 @@ Add your preferred license here (MIT is common for this type of project).
 Mount the Matrix Portal in a frame and run it as a live mission tracker during Artemis II.
 
 ---
+
+## Optional: Adafruit IO Logging
+
+An alternate version of the code is provided:
+
+- `code_with_io.py`
+
+This version logs telemetry (altitude, speed, MET) to Adafruit IO.
+
+To use it:
+1. Rename `code_with_io.py` → `code.py`
+2. Add to `settings.toml`:
+
+ADAFRUIT_AIO_USERNAME="your_username"  
+ADAFRUIT_AIO_KEY="your_key"
+
+3. Create feeds on Adafruit IO:
+- artemis-altitude  
+- artemis-speed  
+- artemis-met
