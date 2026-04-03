@@ -1,7 +1,7 @@
 # Artemis II Tracker with Adafruit IO logging enabled
 # Rename this file to code.py before copying to CIRCUITPY
 
-# code.py  —  Artemis II Mission Display  v9
+# code.py  —  Artemis II Mission Display  v9.1
 # Adafruit Matrix Portal M4  +  64x32 RGB LED Matrix
 #
 # STATE MACHINE:
@@ -20,15 +20,39 @@
 #   artemis-speed      (numeric, mph)
 #   artemis-met        (numeric, seconds elapsed)
 #
+# Required libraries in /CIRCUITPY/lib/ (use .mpy versions from CP 10.x bundle):
+#   adafruit_matrixportal/
+#   adafruit_portalbase/
+#   adafruit_esp32spi/
+#   adafruit_io/
+#   adafruit_minimqtt/
+#   adafruit_bus_device/
+#   adafruit_requests.mpy
+#   adafruit_connection_manager.mpy
+#   adafruit_fakerequests.mpy
+#   adafruit_ticks.mpy
+#   adafruit_imageload/
+#   adafruit_display_text/
+#   adafruit_bitmap_font/
+#   neopixel.mpy
+#   adafruit_lis3dh.mpy
+#
+# IMPORTANT: Use .mpy compiled versions, not .py source versions.
+#            The .py versions cause memory errors on the M4.
+#
 # AROW telemetry fetched in two small chunks to stay within M4 RAM limits:
 #   Chunk 1 (bytes 0-2047):      position 2003/2004/2005, velocity 2009/2010/2011
 #   Chunk 2 (bytes 15000-17000): timestamps 5010/5011/5012
+#
+# Watchdog: script reloads automatically every RELOAD_CYCLES fetch cycles
+#           to prevent heap fragmentation during long runs.
 
 import time
 import board
 import terminalio
 import math
 import gc
+import supervisor
 from adafruit_matrixportal.matrixportal import MatrixPortal
 
 # ── CONFIGURATION ─────────────────────────────────────────────────────────────
@@ -41,6 +65,7 @@ SPLASHDOWN_EPOCH = LAUNCH_EPOCH + (10 * 24 * 3600)
 
 FETCH_INTERVAL = 120   # seconds between AROW polls
 SCROLL_DELAY   = 0.03  # seconds per pixel
+RELOAD_CYCLES  = 45    # reload after this many fetches (~90 min) to clear heap
 
 COL_ORANGE = 0xFF6600
 COL_WHITE  = 0xFFFFFF
@@ -145,7 +170,7 @@ def fetch_and_format():
     Chunk 1 (top of file): position 2003/2004/2005 and velocity 2009/2010/2011
     Chunk 2 (end of file): timestamps 5010/5011/5012 for MET
     Altitude is computed from the position vector (ft).
-    Logs each successful fetch to Adafruit IO if available.
+    Logs each successful fetch to Adafruit IO.
     """
     try:
         gc.collect()
@@ -268,6 +293,7 @@ def run_in_flight():
     matrixportal.set_text_color(COL_WHITE, 2)
     print("State: IN_FLIGHT")
 
+    fetch_count = 0
     last_update = time.monotonic() - FETCH_INTERVAL  # fetch immediately on entry
     scroll_text = "  CONNECTING TO AROW...   "
     gc.collect()
@@ -288,6 +314,13 @@ def run_in_flight():
             gc.collect()
             matrixportal.set_text(scroll_text, 2)
             last_update = time.monotonic()
+
+            # Watchdog: periodic reload to clear heap fragmentation
+            fetch_count += 1
+            if fetch_count >= RELOAD_CYCLES:
+                print("Watchdog reload to clear heap...")
+                time.sleep(1)
+                supervisor.reload()
 
 # ── POST-MISSION MODE ─────────────────────────────────────────────────────────
 

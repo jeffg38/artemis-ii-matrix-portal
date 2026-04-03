@@ -232,20 +232,32 @@ Mount the Matrix Portal in a frame and run it as a live mission tracker during A
 
 ## Optional: Adafruit IO Logging
 
-An alternate version of the code is provided:
+## code_with_io.py (v9.1)
 
-- `code_with_io.py`
+This version adds Adafruit IO cloud logging to the base display code, 
+allowing you to record the full Artemis II trajectory data to the cloud 
+for later analysis and visualization.
 
-This version logs telemetry (altitude, speed, MET) to Adafruit IO.
+### Additional Setup Required
 
-To use it:
-1. Rename `code_with_io.py` → `code.py`
-2. Add to `settings.toml`:
+**settings.toml** — add your Adafruit IO credentials:
+```toml
+ADAFRUIT_AIO_USERNAME = "your_username"
+ADAFRUIT_AIO_KEY = "your_key"
+```
 
-ADAFRUIT_AIO_USERNAME="your_username"  
-ADAFRUIT_AIO_KEY="your_key"
+**Adafruit IO feeds** — create these three feeds at io.adafruit.com:
+- `artemis-altitude` — distance from Earth in miles
+- `artemis-speed` — velocity in mph  
+- `artemis-met` — mission elapsed time in seconds
 
-3. Create feeds on Adafruit IO:
-- artemis-altitude  
-- artemis-speed  
-- artemis-met
+### Features vs base version
+- Logs altitude, speed, and MET to Adafruit IO after each successful fetch
+- Watchdog auto-reload every ~90 minutes to prevent heap fragmentation
+- If IO logging fails it continues displaying telemetry silently
+
+### Notes
+- Adafruit IO free tier allows 30 data points/minute — well within limits
+- Each fetch cycle pushes 3 data points every 2 minutes
+- Gaps in IO data indicate either WiFi dropout or NASA telemetry outage
+- Rename to code.py before copying to CIRCUITPY drive
