@@ -64,31 +64,31 @@ Download the matching **Adafruit CircuitPython Library Bundle**:
 https://circuitpython.org/libraries
 
 Required libraries in /CIRCUITPY/lib/ (use .mpy versions from CP 10.x bundle):
-#   adafruit_matrixportal/
-#   adafruit_portalbase/
-#   adafruit_esp32spi/
-#   adafruit_io/
-#   adafruit_minimqtt/
-#   adafruit_bus_device/
-#   adafruit_requests.mpy
-#   adafruit_connection_manager.mpy
-#   adafruit_fakerequests.mpy
-#   adafruit_ticks.mpy
-#   adafruit_imageload/
-#   adafruit_display_text/
-#   adafruit_bitmap_font/
-#   neopixel.mpy
-#   adafruit_lis3dh.mpy
-#
-# IMPORTANT: Use .mpy compiled versions, not .py source versions.
-#            The .py versions cause memory errors on the M4.
+- 'adafruit_matrixportal/'
+- 'adafruit_portalbase/'
+- 'adafruit_esp32spi/'
+- 'adafruit_io/'
+- 'adafruit_minimqtt/'
+- 'adafruit_bus_device/'
+- 'adafruit_requests.mpy'
+- 'adafruit_connection_manager.mpy'
+- 'adafruit_fakerequests.mpy'
+- 'adafruit_ticks.mpy'
+- 'adafruit_imageload/'
+- 'adafruit_display_text/'
+- 'adafruit_bitmap_font/'
+- 'neopixel.mpy'
+- 'adafruit_lis3dh.mpy'
 
-# AROW telemetry fetched in two small chunks to stay within M4 RAM limits:
-#   Chunk 1 (bytes 0-2047):      position 2003/2004/2005, velocity 2009/2010/2011
-#   Chunk 2 (bytes 15000-17000): timestamps 5010/5011/5012
-#
-# Watchdog: script reloads automatically every RELOAD_CYCLES fetch cycles
-#           to prevent heap fragmentation during long runs.
+IMPORTANT: Use .mpy compiled versions, not .py source versions.
+           The .py versions cause memory errors on the M4.
+
+AROW telemetry fetched in two small chunks to stay within M4 RAM limits:
+   Chunk 1 (bytes 0-2047):      position 2003/2004/2005, velocity 2009/2010/2011
+   Chunk 2 (bytes 15000-17000): timestamps 5010/5011/5012
+
+Watchdog: script reloads automatically every RELOAD_CYCLES fetch cycles
+           to prevent heap fragmentation during long runs.
 
 ### 3. Add Wi-Fi Credentials
 
